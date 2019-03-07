@@ -43,7 +43,7 @@ void Road::flush(){
 }
 
 //first reset the road (flush), then update each vehicle (its parameters and statuses),
-//and finally place each vehicle on the road
+//and finally place each vehicle back on the road
 void Road::update(){
     flush();
 
@@ -70,13 +70,21 @@ void Road::render(){
     }
 }
 
-// void Road::addVehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Acceleration){
-//     Vehicle temp(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Acceleration);
-//     (this->VehicleList).push_back(temp);
-// }
+void Road::addVehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Acceleration){
+    // Vehicle temp(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Acceleration);
+    // VehicleList.emplace_back(temp);
+    VehicleList.emplace_back(Vehicle_Type, Vehicle_Length, Vehicle_Width, Vehicle_MaxSpeed, Vehicle_Acceleration);
+}
+
+void Road::incrementTime(){
+    this->update();
+    this->render();
+}
 
 void Road::printVehicles(){
-
+    for(int i=0; i<this->VehicleList.size(); i++){
+        cout<<i<<". Type: "<<this->VehicleList[i].Type<<"\t Id: "<<this->VehicleList[i].Id<<endl;
+    }
 }
 
 // int main(){

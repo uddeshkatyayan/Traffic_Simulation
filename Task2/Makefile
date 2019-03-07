@@ -1,6 +1,6 @@
 all:
 
-	g++ main.cpp Road.cpp Vehicle.cpp -o main.out
+	g++ main.cpp Road.cpp Vehicle.cpp -o main.out -std=c++11 -stdlib=libc++
 
 	./main.out
 
