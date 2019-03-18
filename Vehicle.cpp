@@ -13,6 +13,7 @@
 #define DEFAULT_VEHICLE_Y 1;
 #define DEFAULT_VEHICLE_VX 0;
 #define DEFAULT_VEHICLE_AX 0;
+#define DEFAULT_VEHICLE_COLOUR "RED";
 using namespace std;
 
 
@@ -28,7 +29,8 @@ Vehicle::Vehicle(){
     this->X = DEFAULT_VEHICLE_X;
     this->Y = DEFAULT_VEHICLE_Y;
     this->VX = DEFAULT_VEHICLE_VX;
-    this->VX = DEFAULT_VEHICLE_AX;
+    this->AX = DEFAULT_VEHICLE_AX;
+    this->Colour = DEFAULT_VEHICLE_COLOUR;
 }
 
 Vehicle::Vehicle(const Vehicle &V1){
@@ -42,6 +44,7 @@ Vehicle::Vehicle(const Vehicle &V1){
     this->Y = V1.Y;
     this->VX = V1.VX;
     this->AX = V1.AX;
+    this->Colour = V1.Colour;
 }
 
 Vehicle & Vehicle::operator=(const Vehicle & V1){
@@ -55,10 +58,11 @@ Vehicle & Vehicle::operator=(const Vehicle & V1){
     this->Y = V1.Y;
     this->VX = V1.VX;
     this->AX = V1.AX;
+    this->Colour = V1.Colour;
     return *this;
 }
 
-Vehicle::Vehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Max_Acceleration){
+Vehicle::Vehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Max_Acceleration, string Vehicle_Colour){
     this->Type = Vehicle_Type;
     this->Length = Vehicle_Length;
     this->Width = Vehicle_Width;
@@ -66,10 +70,12 @@ Vehicle::Vehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int
     this->Max_Acceleration = Vehicle_Max_Acceleration;
 
     this->Id = DEFAULT_VEHICLE_ID;
-    this->X = DEFAULT_VEHICLE_X;
+    this->X = -Vehicle_Length;
     this->Y = DEFAULT_VEHICLE_Y;
-    this->VX = DEFAULT_VEHICLE_VX
-    this->AX = DEFAULT_VEHICLE_AX
+    this->VX = DEFAULT_VEHICLE_VX;
+    this->AX = DEFAULT_VEHICLE_AX;
+
+    this->Colour = Vehicle_Colour;
 }
 
 Vehicle::~Vehicle(){
@@ -146,7 +152,7 @@ struct nextVehicleParams Vehicle::nearestVehicle(vector<vector<int>> roadd){
     nextIndex = -1;
     int flag = -1;
     int f=-5;
-    for (int i = X+Length ; (i<roadd[0].size())&&(flag==-1); i++ ){
+    for (int i = X+Length; (i<roadd[0].size())&&(flag==-1); i++ ){
         f=-8;
         for(int j = Y; j<Y + Width; j++){
             if (roadd[j][i] != -1){
@@ -168,10 +174,50 @@ struct nextVehicleParams Vehicle::nearestVehicle(vector<vector<int>> roadd){
     return params;
 }
 
+int Vehicle::maxStoppingDistance(){
+    int distance = 0;
+    int speed = MaxSpeed;
+
+    while(speed!=0){
+        speed = max(0, speed - Max_Acceleration);
+        distance += speed;
+    }
+
+    return distance;
+}
+
 void Vehicle::update(vector<vector<int>> roadd, vector<Vehicle> VehicleList,int RoadSignal, string RoadSignalState){
+    if (X == -Length){
+        for (int i = 0; i< Id; i++){
+            if (VehicleList[i].X<0){
+                if (!( (Y + Width < VehicleList[i].Y) || (VehicleList[i].Y+VehicleList[i].Width < Y) )){
+                    return;
+                }
+            }
+        }
+    }
+    // cout<<Id<<endl;
     struct nextVehicleParams nextps = nearestVehicle(roadd);
     int nextVehicle = nextps.index;
     int nextDistance = nextps.distance;
+
+    if( (Y + Width -1 < roadd.size() ) && nextVehicle >= 0 && (VX!=0)){
+        if (VehicleList[nextVehicle].MaxSpeed < MaxSpeed){
+            int flag = 1;
+            for(int i = X; i< X+Length;i++){
+                if (roadd[Y + Width][i] != -1){
+                    flag =0;
+                    break;
+                }
+            }
+            if (flag == 1){
+                Y++;
+            }
+
+
+        }
+    }
+
     
     // cout<<"next vehicle: "<<nextVehicle<<endl;
     int a = nextSpeedState(nextVehicle, nextDistance, VehicleList);

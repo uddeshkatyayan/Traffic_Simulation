@@ -11,6 +11,8 @@ class Road {
 public:
      Road(int Road_Length, int Road_Width, int Road_Signal, int Road_Id);
      Road();
+     Road(const Road &R1);
+    Road & operator=(const Road & R1);
      ~Road();
      void printVehicles();
      void flush();
@@ -18,7 +20,7 @@ public:
      void update();           //re-initializes road to all empty chars and then places each vehicle at its correct position;
      void render();
      void incrementTime();
-     void addVehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Max_Acceleration);
+     void addVehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Max_Acceleration, string Vehicle_Colour);
      void renderVehicles();
 
     int Length;                     //consider making these private and create getters and setters

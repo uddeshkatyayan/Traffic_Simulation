@@ -18,9 +18,25 @@ Road::Road(int Road_Length, int Road_Width, int Road_Signal, int Road_Id){
     this->Length = Road_Length;
     this->Width = Road_Width;
     this->Signal = Road_Signal;
-    this->SignalState = "RED";
+    this->SignalState = "GREEN";
+    this->Id = Road_Id;
 }
 
+Road::Road(const Road &R1){
+    Length = R1.Length;
+    Width = R1.Width;
+    Signal = R1.Signal;
+    Id = R1.Id;
+}
+
+Road & Road::operator=(const Road & R1){
+    Length = R1.Length;
+    Width = R1.Width;
+    Signal = R1.Signal;
+    Id = R1.Id;
+
+    return *this;
+}
 Road::~Road(){
 
 }
@@ -81,7 +97,7 @@ void Road::update(){
     for (int i=0; i<VehicleList.size(); i++){
         for(int j=VehicleList[i].X; j<VehicleList[i].X + VehicleList[i].Length; j++){
             for(int k=VehicleList[i].Y; k<VehicleList[i].Y + VehicleList[i].Width; k++){
-                if( j<road[0].size() ) road[k][j] = VehicleList[i].Type[0];
+                if( j<road[0].size() ) {road[k][j] = VehicleList[i].Type[0]; }//cout<<k<<" "<<j<<endl;
             }
         }
     }
@@ -89,7 +105,7 @@ void Road::update(){
     for (int i=0; i<VehicleList.size(); i++){
         for(int j=VehicleList[i].X; j<VehicleList[i].X + VehicleList[i].Length; j++){
             for(int k=VehicleList[i].Y; k<VehicleList[i].Y + VehicleList[i].Width; k++){
-                if( j<road[0].size() ) roadd[k][j] = i;
+                if( j<road[0].size() ) {roadd[k][j] = i;}
             }
         }
     }
@@ -126,14 +142,16 @@ void Road::render(){
     }
 }
 
-void Road::addVehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Max_Acceleration){
+void Road::addVehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Max_Acceleration, string Vehicle_Colour){
     // Vehicle temp(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width, int Vehicle_MaxSpeed, int Vehicle_Max_Acceleration);
     // VehicleList.emplace_back(temp);
-    VehicleList.emplace_back(Vehicle_Type, Vehicle_Length, Vehicle_Width, Vehicle_MaxSpeed, Vehicle_Max_Acceleration);
+    VehicleList.emplace_back(Vehicle_Type, Vehicle_Length, Vehicle_Width, Vehicle_MaxSpeed, Vehicle_Max_Acceleration, Vehicle_Colour);
+
+    VehicleList[ VehicleList.size()-1 ].Id = VehicleList.size()-1;
     Vehicle last = VehicleList[ VehicleList.size()-1 ];
     
-    cout<<VehicleList.size()-1<<" "<< last.X <<" "<<last.Y<<endl;
-    printVehicles();
+    // cout<<VehicleList.size()-1<<" "<< last.X <<" "<<last.Y<<endl;
+    // printVehicles();
     int startingY = 1;
     int flag = 0;
     for (int i=1; i<=Width-Vehicle_Width +1; i++){
@@ -145,7 +163,7 @@ void Road::addVehicle(string Vehicle_Type, int Vehicle_Length, int Vehicle_Width
         if (flag == 1) {break;}
         startingY++;
     }
-    cout<<startingY<<endl;
+    // cout<<startingY<<endl;
     if (startingY <= Width-Vehicle_Width +1){
         VehicleList[ VehicleList.size()-1 ].Y = startingY;
     }
