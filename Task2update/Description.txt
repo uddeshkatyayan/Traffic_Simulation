@@ -1,0 +1,12 @@
+The format of the INI file is divided into three parts:
+1. Road parameters: Road (Road_Length, Road_Width, SignalPos, Road_id)
+2. Vehicle parameters: Vehicle Type (len, wid, max_vel, max_acc )
+3. Simulate: each simullate runs the simulation for 1 s no. of pass time period specified.
+
+Additionally, we have followed the Indian Road Traffic System.
+Assumptions:
+1.The fastest vehicle tries to get to the rightmost lane.
+2.Every vehicle tries to start from the leftmost position.
+3.Overtaking will only take place from the right.
+
+In openGL we are translating the vehicle type using a loop in accordance with the vehicles position and velocity.
